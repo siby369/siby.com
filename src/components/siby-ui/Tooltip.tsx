@@ -1,0 +1,2 @@
+export const Tooltip = ({ text, children }) => <div className="group relative">{children}<div className="hidden group-hover:block absolute bg-black text-white p-2">{text}</div></div>;
+// Updated: 2026-01-17 06:12:20
