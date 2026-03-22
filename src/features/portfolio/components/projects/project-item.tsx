@@ -1,8 +1,18 @@
 "use client"
 
-import { BoxIcon, InfinityIcon, LinkIcon, ExternalLinkIcon, Maximize2Icon } from "lucide-react"
+import { 
+  BoxIcon, 
+  InfinityIcon, 
+  LinkIcon, 
+  ExternalLinkIcon, 
+  Maximize2Icon,
+  RotateCwIcon,
+  SmartphoneIcon,
+  TabletIcon,
+  MonitorIcon
+} from "lucide-react"
 import Image from "next/image"
-import React from "react"
+import React, { useState, useRef } from "react"
 
 import {
   Collapsible,
@@ -22,11 +32,14 @@ import { Tag } from "@/components/ui/tag"
 import { ProseMono } from "@/components/ui/typography"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Separator } from "@/components/ui/separator"
 import { usePeekSidebar } from "@/hooks/use-peek-sidebar"
 import { UTM_PARAMS } from "@/config/site"
 import { addQueryParams } from "@/utils/url"
 
 import type { Project } from "../../types/projects"
+import { cn } from "@/lib/utils"
 
 export function ProjectItem({
   className,
@@ -39,8 +52,22 @@ export function ProjectItem({
   const isOngoing = !end
   const isSinglePeriod = end === start
   const { setIsOpen } = usePeekSidebar()
+  const [device, setDevice] = useState<string>("desktop")
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const projectUrl = addQueryParams(project.link, UTM_PARAMS)
+
+  const handleRefresh = () => {
+    if (iframeRef.current) {
+      iframeRef.current.src = projectUrl
+    }
+  }
+
+  const deviceWidths: Record<string, string> = {
+    mobile: "max-w-[375px]",
+    tablet: "max-w-[768px]",
+    desktop: "max-w-full"
+  }
 
   return (
     <Sheet onOpenChange={setIsOpen}>
@@ -100,16 +127,25 @@ export function ProjectItem({
               </CollapsibleTrigger>
 
               <div className="flex items-center gap-1 pr-4">
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    className="text-muted-foreground hover:text-foreground opacity-0 group-hover/item:opacity-100 transition-opacity"
-                  >
-                    <Maximize2Icon className="size-4" />
-                    <span className="sr-only">Peek Project</span>
-                  </Button>
-                </SheetTrigger>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <SheetTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-muted-foreground hover:text-foreground transition-opacity"
+                        >
+                          <Maximize2Icon className="size-4" />
+                          <span className="sr-only">Open Project Preview</span>
+                        </Button>
+                      </SheetTrigger>
+                    }
+                  />
+                  <TooltipContent>
+                    <p>Open Project Preview</p>
+                  </TooltipContent>
+                </Tooltip>
 
                 <Tooltip>
                   <TooltipTrigger
@@ -159,9 +195,9 @@ export function ProjectItem({
         </CollapsibleContent>
       </Collapsible>
 
-      <SheetContent className="sm:max-w-[80vw] md:max-w-[70vw] lg:max-w-[60vw]">
+      <SheetContent className="sm:max-w-[80vw] md:max-w-[75vw] lg:max-w-[70vw]">
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b px-6 py-4">
+          <div className="flex items-center justify-between border-b px-6 py-3">
             <div className="flex items-center gap-3">
               {project.logo && (
                 <Image
@@ -173,25 +209,94 @@ export function ProjectItem({
                   unoptimized
                 />
               )}
-              <h2 className="text-xl font-semibold">{project.title}</h2>
+              <h2 className="text-xl font-semibold line-clamp-1">{project.title}</h2>
             </div>
-            <div className="flex items-center gap-2 mr-8">
-              <Button variant="outline" size="sm" asChild>
+
+            <div className="flex items-center gap-4 mr-8">
+              <div className="flex h-8 items-center gap-1 rounded-lg border p-1 bg-muted/30">
+                <ToggleGroup 
+                  type="single" 
+                  value={device} 
+                  onValueChange={(val) => val && setDevice(val)}
+                  size="icon-xs"
+                  variant="ghost"
+                  className="gap-1"
+                >
+                  <Tooltip>
+                    <TooltipTrigger
+                      render={
+                        <ToggleGroupItem value="mobile" aria-label="Mobile" className="size-7">
+                          <SmartphoneIcon className="size-3.5" />
+                        </ToggleGroupItem>
+                      }
+                    />
+                    <TooltipContent><p>Mobile View</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger
+                      render={
+                        <ToggleGroupItem value="tablet" aria-label="Tablet" className="size-7">
+                          <TabletIcon className="size-3.5" />
+                        </ToggleGroupItem>
+                      }
+                    />
+                    <TooltipContent><p>Tablet View</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger
+                      render={
+                        <ToggleGroupItem value="desktop" aria-label="Desktop" className="size-7">
+                          <MonitorIcon className="size-3.5" />
+                        </ToggleGroupItem>
+                      }
+                    />
+                    <TooltipContent><p>Desktop View</p></TooltipContent>
+                  </Tooltip>
+                </ToggleGroup>
+
+                <Separator orientation="vertical" className="h-4" />
+
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button 
+                        variant="ghost" 
+                        size="icon-xs" 
+                        onClick={handleRefresh}
+                        className="size-7"
+                      >
+                        <RotateCwIcon className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipContent><p>Refresh Preview</p></TooltipContent>
+                </Tooltip>
+              </div>
+
+              <Button variant="outline" size="sm" className="h-8 gap-1.5 px-3" asChild>
                 <a href={projectUrl} target="_blank" rel="noopener">
-                  <ExternalLinkIcon className="mr-2 size-4" />
+                  <ExternalLinkIcon className="size-3.5" />
                   Visit Website
                 </a>
               </Button>
             </div>
           </div>
           
-          <div className="flex-1 bg-zinc-100 dark:bg-zinc-900/50 relative overflow-hidden">
+          <div className="flex-1 bg-zinc-100 dark:bg-zinc-950 relative overflow-hidden flex justify-center p-4 sm:p-8">
             {project.link !== "#" ? (
-              <iframe
-                src={projectUrl}
-                className="h-full w-full border-none"
-                title={project.title}
-              />
+              <div className={cn(
+                "w-full h-full shadow-2xl transition-all duration-500 ease-in-out bg-background rounded-t-xl border border-b-0 overflow-hidden",
+                deviceWidths[device]
+              )}>
+                <iframe
+                  ref={iframeRef}
+                  src={projectUrl}
+                  className="h-full w-full border-none"
+                  title={project.title}
+                />
+              </div>
             ) : (
               <div className="flex h-full items-center justify-center p-12 text-center flex-col gap-4">
                 <div className="size-20 rounded-2xl bg-muted flex items-center justify-center border">
@@ -211,4 +316,3 @@ export function ProjectItem({
     </Sheet>
   )
 }
-
