@@ -30,7 +30,7 @@ import {
 import { Markdown } from "@/components/markdown"
 import { Tag } from "@/components/ui/tag"
 import { ProseMono } from "@/components/ui/typography"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Separator } from "@/components/ui/separator"
@@ -209,7 +209,10 @@ export function ProjectItem({
                   unoptimized
                 />
               )}
-              <h2 className="text-xl font-semibold line-clamp-1">{project.title}</h2>
+              <SheetTitle className="text-xl font-semibold line-clamp-1">{project.title}</SheetTitle>
+              <SheetDescription className="sr-only">
+                Live preview and details for {project.title}.
+              </SheetDescription>
             </div>
 
             <div className="flex items-center gap-4 mr-8">

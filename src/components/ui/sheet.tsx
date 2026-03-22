@@ -75,11 +75,39 @@ function SheetContent({
   )
 }
 
+function SheetTitle({
+  className,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+  return (
+    <DialogPrimitive.Title
+      data-slot="sheet-title"
+      className={cn("text-lg font-semibold text-foreground", className)}
+      {...props}
+    />
+  )
+}
+
+function SheetDescription({
+  className,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+  return (
+    <DialogPrimitive.Description
+      data-slot="sheet-description"
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  )
+}
+
 export {
   Sheet,
   SheetClose,
   SheetContent,
+  SheetDescription,
   SheetOverlay,
   SheetPortal,
+  SheetTitle,
   SheetTrigger,
 }
