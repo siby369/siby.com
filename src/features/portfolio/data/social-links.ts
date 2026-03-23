@@ -4,8 +4,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
   {
     icon: "https://assets.chanhdai.com/images/link-icons/discord.webp?v=2",
     title: "Discord",
-    subtitle: "deatht8878",
-    href: "https://discordapp.com/users/deatht8878",
+    subtitle: "siby.dev",
+    href: "https://discordapp.com/users/siby.dev",
   },
   {
     icon: "https://assets.chanhdai.com/images/link-icons/github.webp?v=2",
@@ -22,14 +22,14 @@ export const SOCIAL_LINKS: SocialLink[] = [
   {
     icon: "https://assets.chanhdai.com/images/link-icons/dailydotdev.webp?v=2",
     title: "daily.dev",
-    subtitle: "siby369",
-    href: "https://app.daily.dev/siby369",
+    subtitle: "iamsiby",
+    href: "https://app.daily.dev/iamsiby",
   },
   {
     icon: "https://assets.chanhdai.com/images/link-icons/x.webp?v=2",
     title: "X",
-    subtitle: "siby369",
-    href: "https://x.com/siby369",
+    subtitle: "iamSiby_R",
+    href: "https://x.com/iamSiby_R",
   },
   {
     icon: "https://cdn.simpleicons.org/leetcode/FFA116/white",
