@@ -13,7 +13,7 @@ export const EXPERIENCES: Experience[] = [
           end: "2027",
         },
         description: `KIT-Kalaignarkarunanidhi Institute of Technology, Coimbatore.
-Current CGPA: 8.1/10.0
+Current CGPA: 8.4/10.0
 - Coursework: DSA, Computer Architecture, Computer Networks, Operating Systems, Database Management Systems, OOPS.`,
         icon: "education",
         skills: ["DSA", "Computer Architecture", "Computer Networks", "Operating Systems", "DBMS", "OOPS"],

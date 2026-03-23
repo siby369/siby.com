@@ -22,8 +22,8 @@ export const MAIN_NAV: NavItem[] = [
 ]
 
 export const GITHUB_USERNAME = "siby369"
-export const SOURCE_CODE_GITHUB_REPO = "siby369/portfolio"
-export const SOURCE_CODE_GITHUB_URL = "https://github.com/siby369/portfolio"
+export const SOURCE_CODE_GITHUB_REPO = "siby369/siby.com"
+export const SOURCE_CODE_GITHUB_URL = "https://github.com/siby369/siby.com"
 export const SPONSORSHIP_URL = "https://github.com/sponsors/siby369"
 
 export const UTM_PARAMS = {

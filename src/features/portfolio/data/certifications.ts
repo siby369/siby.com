@@ -38,7 +38,7 @@ export const CERTIFICATIONS: Certification[] = [
     issuer: "Coursera",
     issuerIconName: "coursera",
     issueDate: "2025-01-01",
-    credentialURL: "#",
-    credentialID: "N/A",
+    credentialURL: "https://www.coursera.org/account/accomplishments/verify/NNRY4ZOPOBG8",
+    credentialID: "NNRY4ZOPOBG8",
   },
 ]

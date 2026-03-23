@@ -151,11 +151,4 @@ export const TECH_STACK: TechStack[] = [
     lightIconUrl: "https://assets.chanhdai.com/images/tech-stack-icons/chatgpt-light.svg",
     darkIconUrl: "https://assets.chanhdai.com/images/tech-stack-icons/chatgpt-dark.svg",
   },
-  {
-    key: "antigravity",
-    title: "Antigravity+",
-    href: "#",
-    categories: ["Skills"],
-    iconUrl: "https://gw.alipayobjects.com/zos/antfincdn/aPkS8JL7q1/ant.svg",
-  },
 ]
