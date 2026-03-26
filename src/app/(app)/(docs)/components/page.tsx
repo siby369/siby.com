@@ -18,6 +18,7 @@ import {
 import { registryConfig } from "@/config/registry"
 import { UTM_PARAMS } from "@/config/site"
 import { getDocsByCategory } from "@/features/doc/data/documents"
+import { PROJECTS } from "@/features/portfolio/data/projects"
 import type { Doc } from "@/features/doc/types/document"
 import { cn } from "@/lib/utils"
 import { addQueryParams } from "@/utils/url"
@@ -28,16 +29,26 @@ export const metadata: Metadata = {
   description: "A collection of beautifully designed, production-ready blocks.",
 }
 
-const componentsJSON = `\`\`\`json title="components.json" showLineNumbers {3}
-{
-  "registries": {
-    "${registryConfig.namespace}": "${registryConfig.namespaceUrl}"
-  }
-}
-\`\`\``
-
 export default function Page() {
-  const posts = getDocsByCategory("components")
+  const components = getDocsByCategory("components")
+
+  // Combine projects and components for the full list
+  const allItems = [
+    ...PROJECTS.map(p => ({
+      slug: p.id,
+      title: p.title,
+      description: p.description,
+      link: p.link,
+      category: "project"
+    })),
+    ...components.map(c => ({
+      slug: c.slug,
+      title: c.metadata.title,
+      description: c.metadata.description,
+      link: undefined,
+      category: "component"
+    }))
+  ]
 
   return (
     <div className="min-h-svh">
@@ -69,27 +80,21 @@ export default function Page() {
       </div>
 
       <div className="flex flex-col">
-        {posts
-          .slice()
-          .sort((a: Doc, b: Doc) =>
-            a.metadata.title.localeCompare(b.metadata.title, "en", {
-              sensitivity: "base",
-            })
-          )
-          .map((post, index) => (
-            <div key={post.slug} className="relative">
-              {index > 0 && (
-                <div className="screen-line-top screen-line-bottom relative">
-                  <div className="h-8 before:absolute before:-left-[100vw] before:-z-1 before:h-full before:w-[200vw] before:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)] before:bg-size-[10px_10px] before:[--pattern-foreground:var(--color-edge)]/56"></div>
-                </div>
-              )}
-              <BlockItem 
-                name={post.slug} 
-                title={post.metadata.title} 
-                description={post.metadata.description} 
-              />
-            </div>
-          ))}
+        {allItems.map((item, index) => (
+          <div key={item.slug} className="relative">
+            {index > 0 && (
+              <div className="screen-line-top screen-line-bottom relative">
+                <div className="h-8 before:absolute before:-left-[100vw] before:-z-1 before:h-full before:w-[200vw] before:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)] before:bg-size-[10px_10px] before:[--pattern-foreground:var(--color-edge)]/56"></div>
+              </div>
+            )}
+            <BlockItem 
+              name={item.slug} 
+              title={item.title} 
+              description={item.description} 
+              link={item.link}
+            />
+          </div>
+        ))}
       </div>
 
       <div className="screen-line-top p-2">

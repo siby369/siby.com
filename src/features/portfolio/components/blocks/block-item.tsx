@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import {
   LaptopIcon,
@@ -7,15 +7,8 @@ import {
   SmartphoneIcon,
   TabletIcon,
 } from "lucide-react"
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useState, useRef } from "react"
 
-import {
-  Tabs,
-  TabsContent,
-  TabsIndicator,
-  TabsList,
-  TabsTrigger,
-} from "@/components/base/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Index } from "@/__registry__/index"
@@ -24,71 +17,89 @@ export function BlockItem({
   name,
   title,
   description,
+  link,
 }: {
   name: string
   title: string
   description?: string
+  link?: string
 }) {
   const [replay, setReplay] = useState(0)
+  const [device, setDevice] = useState<string>("desktop")
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const Preview = useMemo(() => {
     const Component = Index[name]?.component
-    if (!Component) return null
-    return <Component />
-  }, [name])
+    if (Component) return <Component />
+    
+    if (link && link !== "#") {
+      return (
+        <iframe
+          ref={iframeRef}
+          src={link}
+          className="h-full w-full border-none"
+          title={title}
+        />
+      )
+    }
 
-  const sourceCode = useMemo(() => {
-    return `import React from "react"
-import { cn } from "@/lib/utils"
+    return null
+  }, [name, link, title])
 
-export default function ${name.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')}() {
-  return (
-    <div className="flex items-center justify-center p-8">
-      <h1 className="text-2xl font-bold">${title}</h1>
-    </div>
-  )
-}`
-  }, [name, title])
+  const handleRefresh = () => {
+    setReplay((v) => v + 1)
+    if (iframeRef.current && link) {
+      iframeRef.current.src = link
+    }
+  }
+
+  const deviceWidths: Record<string, string> = {
+    mobile: "max-w-[375px]",
+    tablet: "max-w-[768px]",
+    desktop: "max-w-full"
+  }
 
   return (
     <div className="group/block relative flex flex-col gap-4 py-8 px-4">
-      <Tabs defaultValue="preview" className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <TabsList className="h-8 p-0.5">
-              <TabsTrigger
-                value="preview"
-                className="h-7 rounded-md px-3 text-xs"
-              >
-                Preview
-              </TabsTrigger>
-              <TabsTrigger value="code" className="h-7 rounded-md px-3 text-xs">
-                Code
-              </TabsTrigger>
-              <TabsIndicator />
-            </TabsList>
-
-            <span className="hidden text-sm font-medium text-muted-foreground md:inline-block">
+            <span className="text-sm font-medium text-muted-foreground">
               {title}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="hidden items-center gap-1 rounded-lg border bg-muted/50 p-1 lg:flex">
-              <Button variant="ghost" size="icon-xs" className="h-6 w-6">
+              <Button 
+                variant="ghost" 
+                size="icon-xs" 
+                className={cn("h-6 w-6", device === "mobile" && "bg-background shadow-xs")}
+                onClick={() => setDevice("mobile")}
+              >
                 <SmartphoneIcon className="size-3.5" />
               </Button>
-              <Button variant="ghost" size="icon-xs" className="h-6 w-6">
+              <Button 
+                variant="ghost" 
+                size="icon-xs" 
+                className={cn("h-6 w-6", device === "tablet" && "bg-background shadow-xs")}
+                onClick={() => setDevice("tablet")}
+              >
                 <TabletIcon className="size-3.5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon-xs"
-                className="h-6 w-6 bg-background shadow-xs"
+                className={cn("h-6 w-6", device === "desktop" && "bg-background shadow-xs")}
+                onClick={() => setDevice("desktop")}
               >
                 <MonitorIcon className="size-3.5" />
               </Button>
-              <Button variant="ghost" size="icon-xs" className="h-6 w-6">
+              <Button 
+                variant="ghost" 
+                size="icon-xs" 
+                className="h-6 w-6"
+              >
                 <LaptopIcon className="size-3.5" />
               </Button>
             </div>
@@ -96,40 +107,27 @@ export default function ${name.split('-').map(s => s.charAt(0).toUpperCase() + s
             <Button
               variant="outline"
               size="icon-sm"
-              onClick={() => setReplay((v) => v + 1)}
+              onClick={handleRefresh}
             >
               <RotateCcwIcon className="size-3.5" />
             </Button>
-
-            <div className="hidden items-center gap-2 rounded-lg border bg-muted/50 px-3 py-1 font-mono text-xs sm:flex">
-              <span className="text-muted-foreground">$</span>
-              <span>npx shadcn add @siby369/{name}</span>
-            </div>
           </div>
         </div>
 
-        <TabsContent
-          value="preview"
-          className="relative mt-0 min-h-[400px] overflow-hidden rounded-xl border bg-background"
-        >
+        <div className="relative mt-0 min-h-[400px] overflow-hidden rounded-xl border bg-background flex justify-center">
           <div
             key={replay}
-            className="flex h-full min-h-[400px] w-full items-center justify-center p-4"
+            className={cn(
+              "flex h-[400px] w-full items-center justify-center transition-all duration-500 ease-in-out",
+              deviceWidths[device]
+            )}
           >
             <React.Suspense fallback={<div>Loading...</div>}>
               {Preview}
             </React.Suspense>
           </div>
-        </TabsContent>
-
-        <TabsContent value="code" className="mt-0 overflow-hidden rounded-xl border bg-zinc-950">
-          <div className="max-h-[600px] overflow-auto p-4">
-             <pre className="font-mono text-xs leading-relaxed text-zinc-400">
-               <code>{sourceCode}</code>
-             </pre>
-          </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   )
 }

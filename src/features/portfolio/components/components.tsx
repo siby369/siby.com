@@ -1,70 +1,72 @@
 import { ArrowRightIcon } from "lucide-react"
 import Link from "next/link"
 
-import { ComponentIcon } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { getDocsByCategory } from "@/features/doc/data/documents"
+import { PROJECTS } from "@/features/portfolio/data/projects"
 import { cn } from "@/lib/utils"
 
 import { Panel, PanelHeader, PanelTitle, PanelTitleSup } from "./panel"
+import { BlockItem } from "./blocks/block-item"
 
 export function Components() {
   const components = getDocsByCategory("components")
 
+  // Combine projects and components for the featured list
+  const featuredItems = [
+    ...PROJECTS.map(p => ({
+      slug: p.id,
+      title: p.title,
+      description: p.description,
+      link: p.link
+    })),
+    ...components.slice(0, 2).map(c => ({
+      slug: c.slug,
+      title: c.metadata.title,
+      description: c.metadata.description,
+      link: undefined
+    }))
+  ]
+
   return (
     <Panel id="components">
-      <PanelHeader>
+      <PanelHeader className="flex-col items-start gap-2">
         <PanelTitle>
-          UI
-          <PanelTitleSup>({components.length})</PanelTitleSup>
+          Projects
+          <PanelTitleSup>({PROJECTS.length + components.length})</PanelTitleSup>
         </PanelTitle>
+        <p className="font-mono text-sm text-muted-foreground">
+          A collection of beautifully designed, production-ready blocks.
+        </p>
       </PanelHeader>
 
-      <div className="relative pt-2">
-        <div className="absolute inset-0 -z-1 grid grid-cols-1 gap-2 max-sm:hidden sm:grid-cols-2 md:grid-cols-3">
-          <div className="border-r border-edge" />
-          <div className="border-l border-edge md:border-x" />
-          <div className="border-l border-edge max-md:hidden" />
-        </div>
-
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-          {components.slice(0, 9).map((component) => (
-            <Link
-              key={component.slug}
-              href={`/components/${component.slug}`}
-              className={cn(
-                "group flex items-center gap-4 p-4 pr-2 transition-[background-color] ease-out hover:bg-accent-muted",
-                "max-sm:screen-line-before max-sm:screen-line-after",
-                "sm:max-md:nth-[2n+1]:screen-line-before sm:max-md:nth-[2n+1]:screen-line-after",
-                "md:nth-[3n+1]:screen-line-before md:nth-[3n+1]:screen-line-after"
-              )}
-            >
-              <div className="relative flex size-6 shrink-0 items-center justify-center rounded-lg border border-muted-foreground/15 bg-muted ring-1 ring-edge ring-offset-1 ring-offset-background">
-                <ComponentIcon
-                  className="pointer-events-none size-4 text-muted-foreground"
-                  variant={component.slug}
-                  aria-hidden
-                />
-                {component.metadata.new && (
-                  <span className="absolute -top-1 -right-1 flex items-center justify-center">
-                    <span className="flex size-2 rounded-sm bg-info ring-1 ring-background" />
-                    <span className="sr-only">New</span>
-                  </span>
-                )}
-              </div>
-
-              <h3 className="leading-snug font-medium text-balance">
-                {component.metadata.title}
-              </h3>
-            </Link>
-          ))}
+      <div className="screen-line-before px-4 pt-4 pb-2">
+        <div className="flex flex-wrap gap-4 text-sm font-medium text-muted-foreground">
+          <button className="text-foreground underline decoration-2 underline-offset-8">Featured</button>
+          <button className="hover:text-foreground">Marketing</button>
+          <button className="hover:text-foreground">Content</button>
+          <button className="hover:text-foreground">Application</button>
         </div>
       </div>
 
-      <div className="-mt-px flex justify-center py-2">
+      <div className="flex flex-col">
+        {featuredItems.map((item, index) => (
+          <div key={item.slug} className="relative">
+            {index > 0 && <div className="screen-line-before h-px w-full" />}
+            <BlockItem 
+              name={item.slug} 
+              title={item.title} 
+              description={item.description} 
+              link={item.link}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="screen-line-before flex justify-center py-2">
         <Button className="px-3" variant="default" asChild>
           <Link href="/components">
-            All Components
+            All Projects
             <ArrowRightIcon />
           </Link>
         </Button>
