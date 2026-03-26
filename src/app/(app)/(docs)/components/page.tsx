@@ -1,27 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import { ComponentIcon } from "@/components/icons"
-import { MDX } from "@/components/mdx"
-import { RegistryCommandAnimated } from "@/components/registry-command-animated"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { registryConfig } from "@/config/registry"
 import { UTM_PARAMS } from "@/config/site"
 import { getDocsByCategory } from "@/features/doc/data/documents"
 import { PROJECTS } from "@/features/portfolio/data/projects"
 import type { Doc } from "@/features/doc/types/document"
 import { cn } from "@/lib/utils"
-import { addQueryParams } from "@/utils/url"
 import { BlockItem } from "@/features/portfolio/components/blocks/block-item"
 
 export const metadata: Metadata = {
@@ -54,7 +38,7 @@ export default function Page() {
     <div className="min-h-svh">
       <div className="screen-line-bottom h-8 before:absolute before:-left-[100vw] before:-z-1 before:h-full before:w-[200vw] before:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)] before:bg-size-[10px_10px] before:[--pattern-foreground:var(--color-edge)]/56"></div>
       
-      <div className="screen-line-bottom px-4">
+      <div className="screen-line-bottom px-4 pt-2 pb-4">
         <h1 className="text-3xl leading-none font-semibold tracking-tight">
           Projects
         </h1>
