@@ -19,6 +19,10 @@ export const MAIN_NAV: NavItem[] = [
     title: "Home",
     href: "/",
   },
+  {
+    title: "Projects",
+    href: "/components",
+  },
 ]
 
 export const GITHUB_USERNAME = "siby369"
